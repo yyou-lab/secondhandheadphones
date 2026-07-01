@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Second-hand Headphones</title>
+<title>Second-hand headphones</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -67,6 +67,15 @@
     height: 28px;
     cursor: pointer;
   }
+ 
+ .slider-text {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  font-size: 0.8rem;
+  color: #888;
+  font-weight: 500;
+}
   .slider-track {
     position: absolute;
     top: 0; left: 0; right: 0;
@@ -148,6 +157,10 @@
   </div>
 
   <div class="slider-section">
+   <div class="slider-text">
+  <span>Less colorful</span>
+  <span>More colorful</span>
+</div>
     <div class="slider-track-wrap" id="track-wrap">
       <div class="slider-track"></div>
       <!-- tick at each of the 9 snap positions: 0,12.5,25,37.5,50,62.5,75,87.5,100% -->
