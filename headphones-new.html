@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Brand New Headphones</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    background: #F5F5F3;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+  .card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 1.75rem 2rem 2rem;
+    max-width: 500px;
+    width: 100%;
+    box-shadow: 0 6px 32px rgba(0,0,0,0.09);
+  }
+  .description {
+    margin-bottom: 1.25rem;
+    text-align: center;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    line-height: 1.5;
+  }
+  .image-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 6 / 5;
+    border-radius: 14px;
+    overflow: hidden;
+    background: #fff;
+    margin-bottom: 1.75rem;
+  }
+  .image-wrap img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    opacity: 0;
+  }
+  .image-wrap img.active { opacity: 1; }
+
+  /* ── Slider ── */
+  .slider-section { user-select: none; }
+  .slider-track-wrap {
+    position: relative;
+    height: 28px;
+    cursor: pointer;
+  }
+  .slider-track {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 28px;
+    border-radius: 14px;
+    background: linear-gradient(
+      to right,
+      #bfeadc 0%,
+      #7eeac6 50%,
+      #3deab0 100%
+    );
+  }
+  /* 9 section dividers at each snap position */
+  .tick {
+    position: absolute;
+    top: 4px; bottom: 4px;
+    width: 1.5px;
+    background: rgba(255,255,255,0.45);
+    transform: translateX(-50%);
+    pointer-events: none;
+  }
+  .slider-dot {
+    position: absolute;
+    top: 50%;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #fff;
+    border: 2.5px solid #1a1a1a;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+    transform: translate(-50%, -50%);
+    cursor: grab;
+    z-index: 2;
+  }
+  .slider-dot:active { cursor: grabbing; }
+
+  /* ── Labels ── */
+  .slider-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 9px;
+  }
+  .slider-labels span {
+    font-size: 0.6rem;
+    color: #999;
+    text-align: center;
+    width: 36px;
+    line-height: 1.3;
+  }
+
+  /* ── Readout ── */
+  .readout {
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #1a1a1a;
+  }
+</style>
+</head>
+<body>
+<div class="card">
+
+  <div class="description">Brand new headphones</div>
+
+  <div class="image-wrap">
+    <img id="img-0" class="active" src="images/head-n60.jpg" alt="-60">
+    <img id="img-1" src="images/head-n45.jpg" alt="-45">
+    <img id="img-2" src="images/head-n30.jpg" alt="-30">
+    <img id="img-3" src="images/head-n15.jpg" alt="-15">
+    <img id="img-4" src="images/head-0.jpg"   alt="0">
+    <img id="img-5" src="images/head-p15.jpg" alt="+15">
+    <img id="img-6" src="images/head-p30.jpg" alt="+30">
+    <img id="img-7" src="images/head-p45.jpg" alt="+45">
+    <img id="img-8" src="images/head-p60.jpg" alt="+60">
+  </div>
+
+  <div class="slider-section">
+    <div class="slider-track-wrap" id="track-wrap">
+      <div class="slider-track"></div>
+      <!-- tick at each of the 9 snap positions: 0,12.5,25,37.5,50,62.5,75,87.5,100% -->
+      <div class="tick" style="left:0%"></div>
+      <div class="tick" style="left:12.5%"></div>
+      <div class="tick" style="left:25%"></div>
+      <div class="tick" style="left:37.5%"></div>
+      <div class="tick" style="left:50%"></div>
+      <div class="tick" style="left:62.5%"></div>
+      <div class="tick" style="left:75%"></div>
+      <div class="tick" style="left:87.5%"></div>
+      <div class="tick" style="left:100%"></div>
+      <div class="slider-dot" id="dot"></div>
+    </div>
+    <div class="slider-labels">
+      <span>−60</span>
+      <span>−45</span>
+      <span>−30</span>
+      <span>−15</span>
+      <span>0</span>
+      <span>+15</span>
+      <span>+30</span>
+      <span>+45</span>
+      <span>+60</span>
+    </div>
+  </div>
+
+  <div class="readout" id="readout">0</div>
+
+</div>
+<script>
+  const POSITIONS = [
+    { pct: 0,     imgId: 'img-0', label: '−60' },
+    { pct: 12.5,  imgId: 'img-1', label: '−45' },
+    { pct: 25,    imgId: 'img-2', label: '−30' },
+    { pct: 37.5,  imgId: 'img-3', label: '−15' },
+    { pct: 50,    imgId: 'img-4', label:  '0'  },
+    { pct: 62.5,  imgId: 'img-5', label: '+15' },
+    { pct: 75,    imgId: 'img-6', label: '+30' },
+    { pct: 87.5,  imgId: 'img-7', label: '+45' },
+    { pct: 100,   imgId: 'img-8', label: '+60' },
+  ];
+
+  const dot      = document.getElementById('dot');
+  const trackWrap= document.getElementById('track-wrap');
+  const readout  = document.getElementById('readout');
+  const imgs     = document.querySelectorAll('.image-wrap img');
+
+  function snapToIndex(i) {
+    const p = POSITIONS[i];
+    dot.style.left = p.pct + '%';
+    imgs.forEach(img => img.classList.remove('active'));
+    document.getElementById(p.imgId).classList.add('active');
+    readout.textContent = p.label;
+  }
+
+  function nearestIndex(clientX) {
+    const rect = trackWrap.getBoundingClientRect();
+    const ratio = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+    const pct = ratio * 100;
+    let best = 0, bestDist = Infinity;
+    POSITIONS.forEach((p, i) => {
+      const d = Math.abs(p.pct - pct);
+      if (d < bestDist) { bestDist = d; best = i; }
+    });
+    return best;
+  }
+
+  trackWrap.addEventListener('click', e => snapToIndex(nearestIndex(e.clientX)));
+
+  let dragging = false;
+  dot.addEventListener('mousedown', e => { dragging = true; e.stopPropagation(); e.preventDefault(); });
+  document.addEventListener('mousemove', e => { if (dragging) snapToIndex(nearestIndex(e.clientX)); });
+  document.addEventListener('mouseup', () => { dragging = false; });
+
+  dot.addEventListener('touchstart', e => { dragging = true; e.stopPropagation(); e.preventDefault(); }, { passive: false });
+  document.addEventListener('touchmove', e => { if (dragging) snapToIndex(nearestIndex(e.touches[0].clientX)); }, { passive: false });
+  document.addEventListener('touchend', () => { dragging = false; });
+
+  snapToIndex(4); // start at 0 (index 4)
+</script>
+</body>
+</html>
